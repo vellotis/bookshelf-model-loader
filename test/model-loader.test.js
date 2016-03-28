@@ -4,8 +4,7 @@ var knexConfig = {
   client: 'sqlite3',
   connection: {
     filename: './test/tests.sqlite'
-  },
-  debug: true
+  }
 };
 var Bookshelf = require('bookshelf');
 var bookshelf = Bookshelf(require('knex')(knexConfig));
@@ -136,8 +135,7 @@ describe('bookshelf-model-loader tests', function () {
       path: __dirname + '/models'
     })
 
-    Models.User.findOne({id: 2}).then(function (user) {
-      expect(user).to.be.null();
+    Models.User.findOne({id: 2}).catch(Models.User.NotFoundError, function (err) {
       done();
     });
 
@@ -150,8 +148,7 @@ describe('bookshelf-model-loader tests', function () {
     })
 
     Models.User.destroy({id: 1, forceDelete: true}).then(function (user) {
-      Models.User.findOne({id: 1}, {withTrashed: true}).then(function (user) {
-        expect(user).to.be.null();
+      Models.User.findOne({id: 1}, {withTrashed: true}).catch(Models.User.NotFoundError, function (err) {
         done();
       })
     });
